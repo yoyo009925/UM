@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">延长服务有效期</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>服务详情</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>用户:</strong> {{ user_service.user.username }}</p>
+                <p><strong>服务套餐:</strong> {{ user_service.package.name }}</p>
+                <p><strong>购买日期:</strong> {{ user_service.purchase_date.strftime('%Y-%m-%d') }}</p>
+                <p><strong>开始日期:</strong> {{ user_service.start_date.strftime('%Y-%m-%d') }}</p>
+                <p><strong>到期日期:</strong> {{ user_service.end_date.strftime('%Y-%m-%d') }}</p>
+                <p>
+                    <strong>状态:</strong> 
+                    {% if user_service.end_date > now %}
+                    <span class="badge bg-success">有效</span>
+                    {% else %}
+                    <span class="badge bg-danger">已过期</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>延长有效期</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="days_to_add" class="form-label">延长天数</label>
+                        <input type="number" class="form-control" id="days_to_add" name="days_to_add" min="1" required>
+                        <div class="form-text">输入要延长的天数，将从当前到期日继续延长</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">确认延长</button>
+                    <a href="{{ url_for('admin_user_services') }}" class="btn btn-secondary">取消</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

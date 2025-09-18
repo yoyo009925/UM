@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>用户信息</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>用户名:</strong> {{ user.username }}</p>
+                <p><strong>邮箱:</strong> {{ user.email }}</p>
+                <p><strong>手机号:</strong> {{ user.phone or '未设置' }}</p>
+                <p><strong>注册时间:</strong> {{ user.created_at.strftime('%Y-%m-%d') }}</p>
+                <a href="{{ url_for('change_password') }}" class="btn btn-outline-primary btn-sm">修改密码</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>我的服务</h5>
+                <a href="{{ url_for('services') }}" class="btn btn-primary btn-sm">购买新服务</a>
+            </div>
+            <div class="card-body">
+                {% if active_services %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>服务名称</th>
+                                <th>购买日期</th>
+                                <th>开始日期</th>
+                                <th>到期日期</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in active_services %}
+                            <tr>
+                                <td>{{ service.package.name }}</td>
+                                <td>{{ service.purchase_date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ service.start_date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ service.end_date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+
+                                    {% if service.end_date > now %}
+                                    <span class="badge bg-success">有效</span>
+                                    {% else %}
+                                    <span class="badge bg-danger">已过期</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-center">您还没有购买任何服务</p>
+                <div class="text-center">
+                    <a href="{{ url_for('services') }}" class="btn btn-primary">立即购买</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>最近登录记录</h5>
+            </div>
+            <div class="card-body">
+                {% if user.login_logs %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>登录时间</th>
+                                <th>IP地址</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in user.login_logs|sort(attribute='login_time', reverse=true) %}
+                                <tr>
+                                    <td>{{ log.login_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>{{ log.ip_address }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-center">暂无登录记录</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

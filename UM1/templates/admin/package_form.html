@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{% if package %}编辑{% else %}添加{% endif %}服务套餐</h1>
+</div>
+
+<form method="POST">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="name" class="form-label">套餐名称</label>
+                <input type="text" class="form-control" id="name" name="name" value="{{ package.name if package }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="description" class="form-label">描述</label>
+                <textarea class="form-control" id="description" name="description" rows="3">{{ package.description if package }}</textarea>
+            </div>
+            
+            <div class="mb-3">
+                <label for="price" class="form-label">价格</label>
+                <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ package.price if package }}" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="validity_days" class="form-label">有效期(天)</label>
+                <input type="number" class="form-control" id="validity_days" name="validity_days" value="{{ package.validity_days if package }}" required>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <h4>功能特性</h4>
+            <p class="text-muted">选择此套餐包含的功能</p>
+            
+            {% for i in range(1, 11) %}
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="feature_{{ i }}" name="feature_{{ i }}" 
+                    {% if package and package['feature_' ~ i] %}checked{% endif %}>
+                <label class="form-check-label" for="feature_{{ i }}">
+                    功能 {{ i }}
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">{% if package %}更新{% else %}添加{% endif %}套餐</button>
+    <a href="{{ url_for('admin_packages') }}" class="btn btn-secondary">取消</a>
+</form>
+{% endblock %}

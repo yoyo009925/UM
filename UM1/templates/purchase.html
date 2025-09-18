@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">购买服务</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4>{{ package.name }}</h4>
+                        <p>{{ package.description }}</p>
+                        <div class="mb-3">
+                            <strong>价格: </strong> ¥{{ package.price }}
+                        </div>
+                        <div class="mb-3">
+                            <strong>有效期: </strong> {{ package.validity_days }}天
+                        </div>
+                        <div class="mb-3">
+                            <strong>交易号: </strong> {{ transaction_id }}
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <p>请扫描二维码完成支付</p>
+                        <img src="data:image/png;base64,{{ qr_code }}" alt="支付二维码" class="img-fluid mb-3">
+                        <p class="text-muted">扫描上方二维码支付 ¥{{ package.price }}</p>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-4">
+                    <h5>购买说明</h5>
+                    <ul>
+                        <li>服务将从今天开始生效</li>
+                        <li>如果您已有服务，新服务将从今天开始，原有服务有效期将顺延</li>
+                        <li>支付完成后，系统将自动激活服务</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">返回控制台</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

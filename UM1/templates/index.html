@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded-lg m-3">
+    <h1 class="display-4">欢迎使用用户管理系统</h1>
+    <p class="lead">这是一个功能完善的用户服务管理系统，提供用户注册、登录、服务购买和管理功能。</p>
+    <hr class="my-4">
+    <p>如果您是新用户，请先注册账户；如果您已有账户，请登录系统。</p>
+    <div class="mt-4">
+        {% if not session.user_id %}
+        <a class="btn btn-primary btn-lg me-2" href="{{ url_for('register') }}" role="button">注册</a>
+        <a class="btn btn-outline-primary btn-lg" href="{{ url_for('login') }}" role="button">登录</a>
+        {% else %}
+        <a class="btn btn-primary btn-lg" href="{{ url_for('dashboard') }}" role="button">进入控制台</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row m-3">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">用户注册与登录</h5>
+                <p class="card-text">安全便捷的用户注册和登录系统，支持密码找回功能。</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">服务套餐购买</h5>
+                <p class="card-text">多种服务套餐选择，支持二维码支付购买，灵活满足不同需求。</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">完善的管理功能</h5>
+                <p class="card-text">管理员可以管理用户、服务套餐和用户服务记录。</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
