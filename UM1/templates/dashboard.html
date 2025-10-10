@@ -82,7 +82,7 @@
                         <tbody>
                             {% for log in user.login_logs|sort(attribute='login_time', reverse=true) %}
                                 <tr>
-                                    <td>{{ log.login_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>{{ log.login_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                                     <td>{{ log.ip_address }}</td>
                                 </tr>
                             {% endfor %}

@@ -8,26 +8,37 @@
                 <h3 class="text-center">用户注册</h3>
             </div>
             <div class="card-body">
-                <form method="POST">
+                <form method="POST" id="registerForm">
                     <div class="mb-3">
-                        <label for="username" class="form-label">用户名</label>
+                        <label for="username" class="form-label">用户名 <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="username" name="username" required>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">邮箱</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <input type="email" class="form-control" id="email" name="email">
                     </div>
                     <div class="mb-3">
-                        <label for="phone" class="form-label">手机号</label>
-                        <input type="tel" class="form-control" id="phone" name="phone">
+                        <label for="phone" class="form-label">手机号 <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                            <button type="button" class="btn btn-outline-secondary" id="sendSmsBtn" onclick="sendSmsCode()">
+                                发送验证码
+                            </button>
+                        </div>
+                        <div class="form-text">密码不填时，将使用手机号作为默认密码</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sms_code" class="form-label">短信验证码 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="sms_code" name="sms_code" required maxlength="6">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">密码</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <input type="password" class="form-control" id="password" name="password">
+                        <div class="form-text">如不填写密码，将使用手机号作为密码</div>
                     </div>
                     <div class="mb-3">
                         <label for="confirm_password" class="form-label">确认密码</label>
-                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password">
                     </div>
                     <button type="submit" class="btn btn-primary w-100">注册</button>
                 </form>
@@ -38,4 +49,76 @@
         </div>
     </div>
 </div>
+
+<script>
+let countdown = 0;
+
+function sendSmsCode() {
+    const phone = document.getElementById('phone').value;
+    const sendBtn = document.getElementById('sendSmsBtn');
+
+    if (!phone) {
+        alert('请输入手机号');
+        return;
+    }
+
+    if (countdown > 0) {
+        return;
+    }
+
+    // 禁用按钮并开始倒计时
+    sendBtn.disabled = true;
+    countdown = 60;
+
+    const countdownInterval = setInterval(() => {
+        sendBtn.textContent = `重新发送(${countdown}s)`;
+        countdown--;
+
+        if (countdown < 0) {
+            clearInterval(countdownInterval);
+            sendBtn.disabled = false;
+            sendBtn.textContent = '发送验证码';
+        }
+    }, 1000);
+
+    // 发送AJAX请求
+    fetch('/send_sms_code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phone: phone })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('验证码发送成功');
+        } else {
+            alert('验证码发送失败: ' + data.message);
+            // 发送失败时重置按钮
+            clearInterval(countdownInterval);
+            sendBtn.disabled = false;
+            sendBtn.textContent = '发送验证码';
+            countdown = 0;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('发送验证码时出现错误');
+        clearInterval(countdownInterval);
+        sendBtn.disabled = false;
+        sendBtn.textContent = '发送验证码';
+        countdown = 0;
+    });
+}
+
+// 手机号输入框变化时重置按钮状态
+document.getElementById('phone').addEventListener('input', function() {
+    const sendBtn = document.getElementById('sendSmsBtn');
+    if (countdown === 0) {
+        sendBtn.disabled = false;
+        sendBtn.textContent = '发送验证码';
+    }
+});
+</script>
 {% endblock %}
